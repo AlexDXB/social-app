@@ -1,23 +1,76 @@
-import logo from './logo.svg';
-import './App.css';
+import Register from "./Register/Register";
+import Login from "./Login/Login";
+import Leftbar from "./components/Leftbar/Leftbar";
+import Rightbar from "./components/Rightbar/Rightbar";
+import Navbar from "./components/Navbar/Navbar";
+import "./styles.scss";
+import Profile from "./Profile/Profile";
+import Home from "./Home/Home";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
+import { useContext } from "react";
+import { DarkModeContext } from "./context/darkModeContext";
 
 function App() {
+  const { darkMode } = useContext(DarkModeContext);
+  const currentUser = true;
+  const Layout = () => {
+    return (
+      <div className={` theme-${darkMode ? "dark" : "light"}  `}>
+        <Navbar />
+        <div style={{ display: "flex" }}>
+          <Leftbar />
+          <div style={{ flex: 6 }}>
+            <Outlet />
+          </div>
+          <Rightbar />
+        </div>
+      </div>
+    );
+  };
+
+  const ProtectedRoute = ({ children }) => {
+    if (!currentUser) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+        {
+          path: "/profile/:id",
+          element: <Profile />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+  ]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <RouterProvider router={router} />
     </div>
   );
 }
