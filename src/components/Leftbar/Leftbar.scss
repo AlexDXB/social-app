@@ -8,11 +8,18 @@
     height: calc(100vh - 70px);
     background-color: themed("bg");
     color: themed("textColorSoft");
+
+    @include mobile {
+      display: none;
+    }
     &::-webkit-scrollbar {
       display: none;
     }
     .container {
       padding: 20px;
+      @include tablet {
+        padding: 10px;
+      }
 
       hr {
         margin: 20px 0px;
@@ -40,17 +47,15 @@
             object-fit: cover;
           }
           span {
-            font-size: 16px;
+            font-size: 14px;
           }
         }
         .item {
           display: flex;
           align-items: center;
-
           gap: 10px;
           img {
             width: 30px;
-            height: 30px;
           }
           span {
             font-size: 14px;
